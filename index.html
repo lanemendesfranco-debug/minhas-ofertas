@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1A6B4A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Minhas Ofertas Shopee</title>
+<style>
+  :root { --verde: #1A6B4A; --turquesa: #1DC8C0; --branco-off: #F3F5EE; --cinza: #666; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--branco-off); color: #222; padding: 16px; min-height: 100vh; }
+  header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  h1 { font-size: 1.25rem; color: var(--verde); font-weight: 700; }
+  
+  #config { background: #fff; padding: 16px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 16px; display: none; }
+  #config.mostrar { display: block; }
+  .config-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; }
+  .config-header h2 { font-size: 1rem; color: var(--verde); }
+  .toggle { font-size: 1.2rem; }
+  .config-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .config-grid input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 0.95rem; background: #fafafa; }
+  .config-grid input:focus { outline: 2px solid var(--turquesa); border-color: var(--turquesa); background: #fff; }
+  .botoes-config { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .btn-outline { padding: 12px; border: 1px solid var(--verde); border-radius: 10px; background: transparent; color: var(--verde); font-weight: 700; cursor: pointer; }
+  .btn-outline:active { background: #e8f5ee; }
+  .aviso { font-size: 0.78rem; color: #e57373; margin-top: 8px; display: none; }
+
+  form { background: #fff; padding: 16px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 16px; display: grid; grid-template-columns: 1fr; gap: 12px; }
+  input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; background: #fafafa; }
+  input:focus { outline: 2px solid var(--turquesa); border-color: var(--turquesa); background: #fff; }
+  button.primary { padding: 14px; border: none; border-radius: 10px; background: var(--verde); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; }
+  button.primary:active { opacity: 0.9; }
+
+  #lista { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .card { background: #fff; border-radius: 16px; padding: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: relative; overflow: hidden; }
+  .card.importado { border-left: 4px solid var(--turquesa); }
+  .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; background: #e8f5ee; display: block; }
+  .sem-img { width: 100%; height: 150px; background: #e8f5ee; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 0.85rem; }
+  .remover { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.15); color: #fff; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 1.4rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .card h3 { font-size: 0.98rem; margin: 10px 0 6px; line-height: 1.3; }
+  .precos { display: flex; gap: 8px; align-items: baseline; margin-bottom: 6px; }
+  .preco-atual { font-size: 1.1rem; font-weight: 800; color: var(--verde); }
+  .preco-antigo { font-size: 0.85rem; color: #999; text-decoration: line-through; }
+  .desconto { font-size: 0.78rem; background: #e0f7f6; color: var(--turquesa); padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-block; margin-bottom: 8px; }
+  .acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .acoes button { padding: 11px; border: none; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+  .whatsapp { background: #25D366; color: #fff; }
+  .whatsapp:active { opacity: 0.9; }
+  .copiar { background: var(--turquesa); color: #fff; }
+  .copiar:active { opacity: 0.9; }
+  .adicionar-api { background: var(--verde); color: #fff; }
+  .adicionar-api:active { opacity: 0.9; }
+
+  .vazio { text-align: center; color: var(--cinza); margin-top: 60px; font-size: 0.95rem; }
+  .dica { font-size: 0.8rem; color: var(--cinza); margin-top: 6px; text-align: center; line-height: 1.4; }
+  .rodape { text-align: center; margin-top: 20px; font-size: 0.75rem; color: var(--cinza); }
+  .status { margin-bottom: 10px; font-size: 0.85rem; }
+  .status.ok { color: #2e7d32; }
+  .status.erro { color: #e57373; }
+</style>
+</head>
+<body>
+
+<header>
+  <span style="font-size:1.6rem;">🛍️</span>
+  <h1>Minhas Ofertas</h1>
+</header>
+
+<section id="config">
+  <div class="config-header" onclick="toggleConfig()">
+    <h2>⚙️ API da Shopee</h2>
+    <span class="toggle" id="toggleIcon">▼</span>
+  </div>
+  <div class="config-grid">
+    <input type="text" id="apiAppKey" placeholder="App Key da Shopee">
+    <input type="text" id="apiAccessToken" placeholder="Access Token">
+    <input type="text" id="apiEndpoint" placeholder="Endpoint da API (ex: https://open.api.shopee.com/...)">
+  </div>
+  <div class="botoes-config">
+    <button class="btn-outline" onclick="salvarConfig()">Salvar configuração</button>
+    <button class="primary" onclick="buscarOfertasShopee()">Puxar ofertas da Shopee</button>
+  </div>
+  <div id="avisoCors" class="aviso">⚠️ A API da Shopee bloqueou chamada direta do navegador (CORS). Você precisará de um backend intermediário ou continuar adicionando manualmente.</div>
+  <p class="dica">Suas chaves ficam apenas neste celular. Não são enviadas para nenhum servidor.</p>
+</section>
+
+<form id="form">
+  <input type="text" id="nome" placeholder="Nome do produto" required maxlength="80">
+  <input type="number" id="preco" placeholder="Preço (R$)" step="0.01" required min="0">
+  <input type="number" id="precoAntigo" placeholder="Preço antigo (opcional)" step="0.01" min="0">
+  <input type="text" id="imagem" placeholder="URL da imagem do produto">
+  <input type="text" id="link" placeholder="Seu link de afiliado Shopee" required>
+  <button type="submit" class="primary">Adicionar oferta manualmente</button>
+  <p class="dica">Gere o link de afiliado no Portal do Afiliado Shopee e cole aqui.</p>
+</form>
+
+<div id="status"></div>
+<div id="lista"></div>
+
+<div class="rodape">App grátis · Seus dados ficam apenas no seu celular</div>
+
+<script>
+  const configEl = document.getElementById('config');
+  const toggleIcon = document.getElementById('toggleIcon');
+  const avisoCors = document.getElementById('avisoCors');
+  const statusEl = document.getElementById('status');
+  const lista = document.getElementById('lista');
+
+  let ofertas = JSON.parse(localStorage.getItem('minhasOfertas')) || [];
+  let config = JSON.parse(localStorage.getItem('configShopee')) || {};
+
+  if (config.appKey) document.getElementById('apiAppKey').value = config.appKey;
+  if (config.accessToken) document.getElementById('apiAccessToken').value = config.accessToken;
+  if (config.endpoint) document.getElementById('apiEndpoint').value = config.endpoint;
+
+  function toggleConfig() {
+    const mostrando = configEl.classList.toggle('mostrar');
+    toggleIcon.textContent = mostrando ? '▲' : '▼';
+  }
+
+  function salvarConfig() {
+    config = {
+      appKey: document.getElementById('apiAppKey').value.trim(),
+      accessToken: document.getElementById('apiAccessToken').value.trim(),
+      endpoint: document.getElementById('apiEndpoint').value.trim()
+    };
+    localStorage.setItem('configShopee', JSON.stringify(config));
+    if (!config.appKey || !config.accessToken) {
+      status('Preencha App Key e Access Token.', 'erro');
+      return;
+    }
+    status('Configuração salva. Suas chaves ficam apenas neste celular.', 'ok');
+  }
+
+  function desconto(atual, antigo) { if (!antigo || atual >= antigo) return null; return Math.round(((antigo - atual) / antigo) * 100); }
+
+  function render() {
+    lista.innerHTML = '';
+    if (ofertas.length === 0) { lista.innerHTML = '<p class="vazio">Nenhuma oferta ainda.<br>Adicione acima ou puxe da Shopee 👆</p>'; return; }
+    ofertas.forEach((o, i) => {
+      const d = desconto(o.preco, o.precoAntigo);
+      const card = document.createElement('div');
+      card.className = 'card' + (o.importado ? ' importado' : '');
+      card.innerHTML = `
+        ${o.imagem ? `<img src="${o.imagem}" alt="${o.nome}" onerror="this.parentElement.innerHTML='<div class=\\'sem-img\\'>Sem imagem</div>'">` : '<div class="sem-img">Sem imagem</div>'}
+        <button class="remover" onclick="remover(${i})" aria-label="Remover">×</button>
+        <h3>${escapeHtml(o.nome)}</h3>
+        <div class="precos"><span class="preco-atual">R$ ${Number(o.preco).toFixed(2)}</span>${o.precoAntigo ? `<span class="preco-antigo">R$ ${Number(o.precoAntigo).toFixed(2)}</span>` : ''}</div>
+        ${d ? `<span class="desconto">-${d}%</span>` : ''}
+        <div class="acoes">
+          <button class="whatsapp" onclick="abrirWhatsApp('${escapeHtml(o.nome)}', '${o.link}')">WhatsApp Status</button>
+          <button class="copiar" onclick="copiar('${o.link}')">Copiar link</button>
+        </div>
+      `;
+      lista.appendChild(card);
+    });
+  }
+
+  document.getElementById('form').onsubmit = (e) => {
+    e.preventDefault();
+    const preco = parseFloat(document.getElementById('preco').value) || 0;
+    const precoAntigo = document.getElementById('precoAntigo').value ? parseFloat(document.getElementById('precoAntigo').value) : null;
+    const oferta = {
+      nome: document.getElementById('nome').value.trim(),
+      preco, precoAntigo,
+      imagem: document.getElementById('imagem').value.trim() || null,
+      link: document.getElementById('link').value.trim(),
+      importado: false,
+      data: new Date().toISOString()
+    };
+    if (!oferta.nome || !oferta.link) { alert('Preencha nome e link.'); return; }
+    ofertas.unshift(oferta);
+    salvar();
+    document.getElementById('form').reset();
+  };
+
+  async function buscarOfertasShopee() {
+    if (!config.appKey || !config.accessToken || !config.endpoint) {
+      status('Preencha todos os campos da API antes de buscar.', 'erro');
+      return;
+    }
+
+    status('Buscando ofertas da Shopee...', 'ok');
+
+    try {
+      const url = config.endpoint + 
+        (config.endpoint.includes('?') ? '&' : '?') +
+        'app_key=' + encodeURIComponent(config.appKey) +
+        '&access_token=' + encodeURIComponent(config.accessToken);
+
+      const resposta = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + config.accessToken,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
+
+      const dados = await resposta.json();
+
+      const produtos = dados.products || dados.data || dados.items || [];
+
+      let adicionados = 0;
+      produtos.forEach(p => {
+        const nome = p.name || p.product_name || 'Produto Shopee';
+        const preco = Number(p.price || p.current_price || 0);
+        const precoAntigo = Number(p.original_price || p.price_before || 0) || null;
+        const imagem = p.image || p.image_url || p.thumbnail || null;
+        const link = p.affiliate_link || p.short_link || p.url || null;
+
+        if (!nome || !link) return;
+
+        ofertas.unshift({
+          nome, preco, precoAntigo, imagem, link,
+          importado: true,
+          data: new Date().toISOString()
+        });
+        adicionados++;
+      });
+
+      salvar();
+      status(`✅ ${adicionados} oferta(s) importada(s) da Shopee.`, 'ok');
+      avisoCors.style.display = 'none';
+
+    } catch (erro) {
+      console.error(erro);
+      avisoCors.style.display = 'block';
+      if (erro.name === 'TypeError') {
+        status('Erro de CORS: a Shopee bloqueou chamada direta do navegador. Use um backend intermediário ou adicione manualmente.', 'erro');
+      } else {
+        status('Erro: ' + erro.message, 'erro');
+      }
+    }
+  }
+
+  window.remover = (i) => { if (confirm('Remover esta oferta?')) { ofertas.splice(i, 1); salvar(); } };
+
+  window.copiar = async (link) => {
+    try { await navigator.clipboard.writeText(link); } catch {}
+    const btn = event.currentTarget;
+    const original = btn.textContent;
+    btn.textContent = 'Copiado!';
+    setTimeout(() => btn.textContent = original, 1500);
+  };
+
+  window.abrirWhatsApp = (nome, link) => {
+    const texto = `🛒 ${nome}\n\n💰 Aproveite essa oferta!\n🔗 ${link}\n\n#Ofertas #Shopee`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
+  };
+
+  function salvar() { localStorage.setItem('minhasOfertas', JSON.stringify(ofertas)); render(); }
+  function status(msg, tipo) { statusEl.textContent = msg; statusEl.className = 'status ' + tipo; }
+  function escapeHtml(t) { return String(t).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+  render();
+</script>
+
+</body>
+</html>
