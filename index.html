@@ -12,12 +12,11 @@
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--branco-off); color: #222; padding: 16px; min-height: 100vh; }
   header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
   h1 { font-size: 1.25rem; color: var(--verde); font-weight: 700; }
-  
-  #config { background: #fff; padding: 16px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 16px; display: none; }
-  #config.mostrar { display: block; }
-  .config-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; }
+
+  /* Config API - VISÍVEL no topo */
+  #config { background: #fff; padding: 16px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 16px; border: 2px solid var(--turquesa); }
+  .config-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .config-header h2 { font-size: 1rem; color: var(--verde); }
-  .toggle { font-size: 1.2rem; }
   .config-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
   .config-grid input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 0.95rem; background: #fafafa; }
   .config-grid input:focus { outline: 2px solid var(--turquesa); border-color: var(--turquesa); background: #fff; }
@@ -25,6 +24,7 @@
   .btn-outline { padding: 12px; border: 1px solid var(--verde); border-radius: 10px; background: transparent; color: var(--verde); font-weight: 700; cursor: pointer; }
   .btn-outline:active { background: #e8f5ee; }
   .aviso { font-size: 0.78rem; color: #e57373; margin-top: 8px; display: none; }
+  .aviso.mostrar { display: block; }
 
   form { background: #fff; padding: 16px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 16px; display: grid; grid-template-columns: 1fr; gap: 12px; }
   input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; background: #fafafa; }
@@ -49,8 +49,6 @@
   .whatsapp:active { opacity: 0.9; }
   .copiar { background: var(--turquesa); color: #fff; }
   .copiar:active { opacity: 0.9; }
-  .adicionar-api { background: var(--verde); color: #fff; }
-  .adicionar-api:active { opacity: 0.9; }
 
   .vazio { text-align: center; color: var(--cinza); margin-top: 60px; font-size: 0.95rem; }
   .dica { font-size: 0.8rem; color: var(--cinza); margin-top: 6px; text-align: center; line-height: 1.4; }
@@ -67,24 +65,25 @@
   <h1>Minhas Ofertas</h1>
 </header>
 
+<!-- CONFIG DA API - VISÍVEL -->
 <section id="config">
-  <div class="config-header" onclick="toggleConfig()">
+  <div class="config-header">
     <h2>⚙️ API da Shopee</h2>
-    <span class="toggle" id="toggleIcon">▼</span>
   </div>
   <div class="config-grid">
     <input type="text" id="apiAppKey" placeholder="App Key da Shopee">
-    <input type="text" id="apiAccessToken" placeholder="Access Token">
+    <input type="text" id="apiAccessToken" placeholder="Access Token da Shopee">
     <input type="text" id="apiEndpoint" placeholder="Endpoint da API (ex: https://open.api.shopee.com/...)">
   </div>
   <div class="botoes-config">
     <button class="btn-outline" onclick="salvarConfig()">Salvar configuração</button>
     <button class="primary" onclick="buscarOfertasShopee()">Puxar ofertas da Shopee</button>
   </div>
-  <div id="avisoCors" class="aviso">⚠️ A API da Shopee bloqueou chamada direta do navegador (CORS). Você precisará de um backend intermediário ou continuar adicionando manualmente.</div>
+  <div id="avisoCors" class="aviso">⚠️ Se aparecer erro de CORS, a Shopee bloqueou chamada direta do navegador. Continue adicionando manualmente.</div>
   <p class="dica">Suas chaves ficam apenas neste celular. Não são enviadas para nenhum servidor.</p>
 </section>
 
+<!-- FORM MANUAL -->
 <form id="form">
   <input type="text" id="nome" placeholder="Nome do produto" required maxlength="80">
   <input type="number" id="preco" placeholder="Preço (R$)" step="0.01" required min="0">
@@ -101,11 +100,9 @@
 <div class="rodape">App grátis · Seus dados ficam apenas no seu celular</div>
 
 <script>
-  const configEl = document.getElementById('config');
-  const toggleIcon = document.getElementById('toggleIcon');
-  const avisoCors = document.getElementById('avisoCors');
   const statusEl = document.getElementById('status');
   const lista = document.getElementById('lista');
+  const avisoCors = document.getElementById('avisoCors');
 
   let ofertas = JSON.parse(localStorage.getItem('minhasOfertas')) || [];
   let config = JSON.parse(localStorage.getItem('configShopee')) || {};
@@ -113,11 +110,6 @@
   if (config.appKey) document.getElementById('apiAppKey').value = config.appKey;
   if (config.accessToken) document.getElementById('apiAccessToken').value = config.accessToken;
   if (config.endpoint) document.getElementById('apiEndpoint').value = config.endpoint;
-
-  function toggleConfig() {
-    const mostrando = configEl.classList.toggle('mostrar');
-    toggleIcon.textContent = mostrando ? '▲' : '▼';
-  }
 
   function salvarConfig() {
     config = {
@@ -130,7 +122,7 @@
       status('Preencha App Key e Access Token.', 'erro');
       return;
     }
-    status('Configuração salva. Suas chaves ficam apenas neste celular.', 'ok');
+    status('Configuração salva.', 'ok');
   }
 
   function desconto(atual, antigo) { if (!antigo || atual >= antigo) return null; return Math.round(((antigo - atual) / antigo) * 100); }
@@ -200,7 +192,6 @@
       if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
 
       const dados = await resposta.json();
-
       const produtos = dados.products || dados.data || dados.items || [];
 
       let adicionados = 0;
@@ -223,13 +214,13 @@
 
       salvar();
       status(`✅ ${adicionados} oferta(s) importada(s) da Shopee.`, 'ok');
-      avisoCors.style.display = 'none';
+      avisoCors.classList.remove('mostrar');
 
     } catch (erro) {
       console.error(erro);
-      avisoCors.style.display = 'block';
+      avisoCors.classList.add('mostrar');
       if (erro.name === 'TypeError') {
-        status('Erro de CORS: a Shopee bloqueou chamada direta do navegador. Use um backend intermediário ou adicione manualmente.', 'erro');
+        status('Erro de CORS: a Shopee bloqueou chamada direta do navegador. Adicione ofertas manualmente.', 'erro');
       } else {
         status('Erro: ' + erro.message, 'erro');
       }
